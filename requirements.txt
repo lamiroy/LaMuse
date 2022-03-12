@@ -6,7 +6,7 @@ matplotlib==3.5.1
 ipython==7.31.1
 pip==21.3.1
 setuptools==60.2.0
-Pillow==9.0.0
+Pillow==9.0.1
 opencv-python==4.5.5.62
 
 PySimpleGUI==4.56.0
