@@ -279,7 +279,7 @@ def create_case_study(path_to_paintings: str, path_to_substitute_objects: str,
             # Save background_image.
             background_image = background_image.convert("RGB")
             file_saved = path_to_results + painting_name + "-method=" + method_names[
-                j // nb_paintings] + "-value=" + '%.3f' % real_value + '.pnm'
+                j // nb_paintings] + "-value=" + '%.3f' % real_value + '.png'
             if bw_convert:
                background_image = ImageOps.grayscale(background_image)
 

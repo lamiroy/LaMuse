@@ -5,7 +5,7 @@ keras~=2.8.0
 scipy~=1.7.3
 scikit-image
 matplotlib~=3.5.1
-ipython~=7.31.1
+ipython~=8.0
 setuptools~=60.2.0
 Pillow~=9.0.0
 opencv-python~=4.5.5.62

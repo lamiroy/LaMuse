@@ -1,3 +1,7 @@
+# Version 0.2.6
+
+- saving images in `.png` format rather than `.pnm`
+
 # Version 0.2.5
 
 - Extended features of `--log_file` output to include color information of global image
