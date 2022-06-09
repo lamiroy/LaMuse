@@ -1,5 +1,5 @@
 numpy==1.22.0
-tensorflow==2.8.0
+tensorflow==2.8.1
 tensorflow-hub
 keras==2.8.0
 scipy==1.7.3
