@@ -12,10 +12,13 @@ from glob import glob
 import cv2
 import errno
 import argparse
+import json
+
 import pkg_resources
 
 import PySimpleGUI as sg
 
+from .tools.color_palette import get_color_names
 from .tools.generate_segmented_pictures import generate_images
 from .tools.create_original_case_study import create_collage
 from .tools.fast_style_transfer import apply_style_transfer
@@ -54,8 +57,8 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
     if args.verbose:
         print("   Calling create_collage")
 
-    create_collage(painting_folder, substitute_folder,
-                   background_folder, interpretation_folder, 1)
+    create_case_study(painting_folder, substitute_folder,
+                      background_folder, interpretation_folder, 1)
 
     if args.verbose:
         print("   Done calling create_collage")
@@ -64,7 +67,7 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
     # Go over all images in 'default_painting_folder' and the corresponding images in
     # 'default_interpretation_folder' and apply a style transfer.
     ##
-    painting_file_list = [y for x in [glob(painting_folder + '/*.%s' % ext) for ext in image_extensions]
+    painting_file_list = [y for x in [glob(f'{painting_folder}/*.{ext}') for ext in image_extensions]
                           for y in x]
 
     for painting in painting_file_list:
@@ -85,7 +88,8 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             if args.verbose:
                 print(f'    Saving {interpretation}')
 
-            apply_style_transfer(interpretation, painting, interpretation)
+            final_image = apply_style_transfer(interpretation, painting, interpretation, args.rescale)
+            trace_log[painting] += f'{get_color_names(final_image)}'
 
             if args.verbose:
                 print(f'    Done saving {interpretation}')
@@ -94,9 +98,13 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
                 if args.verbose:
                     print(f'    Adding watermark {args.watermark}')
 
-                image = cv2.imread(interpretation, cv2.IMREAD_UNCHANGED)
-                image = add_watermark(image, args.watermark)
-                cv2.imwrite(interpretation, image)
+                final_image = cv2.imread(interpretation, cv2.IMREAD_UNCHANGED)
+                final_image = add_watermark(final_image, args.watermark)
+                cv2.imwrite(interpretation, final_image)
+
+    if args.trace_file:
+        with open(args.trace_file, 'w') as f:
+            f.write(json.dumps(trace_log))
 
 
 if __name__ == "__main__":
@@ -128,10 +136,16 @@ if __name__ == "__main__":
                         default=[default_image_folder + segmentation_suffix])
     parser.add_argument("--demo", action='store_true', help='Run in demo mode, reducing features to bare minimum')
     parser.add_argument("--nogui", action='store_true', help='Run in no-gui mode')
+    parser.add_argument("-bw", action='store_true', help='Add greyscale filter')
     parser.add_argument("--verbose", action='store_true', help='Display trace messages')
+    parser.add_argument("--rescale", action='store_true', help='Remove rescaling before applying style transfer')
     parser.add_argument('--version', action='version', version='%(prog)s {}'.format(version_number))
     parser.add_argument("--watermark", "-wm", type=str, nargs='?', const=default_watermark_file,
                         help='watermark file (defaults to "' + default_watermark_file + '" if non specified)')
+
+    parser.add_argument("--trace_file", "-tr", type=str, nargs='?',
+                        help=f'output file for tracing all operations and their parameters (defaults to "{default_trace_file}" if non specified)',
+                        const=default_trace_file)
 
     args = parser.parse_args()
 

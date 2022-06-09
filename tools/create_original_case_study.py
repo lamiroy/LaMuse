@@ -189,9 +189,10 @@ def create_image_with_categories(background_image, painting, r, cursor):
 
 
 def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
-                   path_to_background_images: str,
-                   path_to_results: str,
-                   nb_paintings: int = 3) -> None:
+                      path_to_background_images: str,
+                      path_to_results: str,
+                      nb_paintings: int = 3,
+                      bw_convert = False) -> dict:
     """
     :param path_to_paintings:
     :param path_to_substitute_objects:
@@ -201,6 +202,7 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
     :return:
     """
     path_to_results += '/'
+    trace_log = {}
 
     cursor = 0
     cursor_step = 0
@@ -221,11 +223,11 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
     # Run the model on the painting.
     model = MaskRCNNModel().model
 
-    painting_file_list = [y for x in [glob(path_to_paintings + '/*.%s' % ext) for ext in image_extensions] for y in x]
+    painting_file_list = [y for x in [glob(path_to_paintings + '/*.%s' % ext) for ext.lower() in image_extensions] for y in x]
 
     # List of available background images
     background_file_list = \
-        [y for x in [glob(path_to_background_images + '/*.%s' % ext) for ext in image_extensions] for y in x]
+        [y for x in [glob(path_to_background_images + '/*.%s' % ext) for ext.lower() in image_extensions] for y in x]
 
     if len(object_image_list) == 0 or len(object_image_list_nested) == 0:
         print("Updating objects...")
@@ -234,7 +236,7 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
             # object_file_list[obj] = [y for x in [glob(path_to_substitute_objects + '/%s/*.%s' % (obj, ext))
             # for ext in image_extensions] for y in x]
             file_list = [y for x in [glob(path_to_substitute_objects + '/%s/*.%s' % (obj, ext))
-                                     for ext in image_extensions] for y in x]
+                                     for ext.lower() in image_extensions] for y in x]
             object_image_list_nested[obj] = [cv2.imread(i, cv2.IMREAD_UNCHANGED) for i in file_list]
             [object_image_list.append(img) for img in object_image_list_nested[obj]]
         # for nested_list in object_file_list.values():
@@ -244,13 +246,19 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
     for painting_filename in painting_file_list:
         print("\nPainting : ", painting_filename)
         painting_name = os.path.basename(painting_filename)
+
+        trace_log[painting_filename] = f'(painting_name,{painting_name})'
+
         painting = load_img(painting_filename)
         painting = img_to_array(painting)
         painting_width, painting_height = painting.shape[1], painting.shape[0]
 
         # Extract significant items from painting
         results = model.detect([painting], verbose=0, probability_criteria=0.7)
-        r = results[0]
+        detected_items = results[0]
+
+        for class_id in detected_items['class_ids']:
+            trace_log[painting_filename] += f'(contains,{MaskRCNNModel.class_names[class_id]})'
 
         cursor = 0
         j = 0
@@ -267,12 +275,15 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
                 background_image_name = painting_filename
 
             background_image = Image.open(background_image_name)
+
+            trace_log[painting_filename] += f'(background_image,{background_image_name})'
+
             # Resize the background image with the size of painting.
             background_image = background_image.resize((painting_width, painting_height), Image.ANTIALIAS)
             background_image = background_image.convert("RGBA")
             original_background_image = background_image
 
-            background_image, real_value = technic(background_image, painting, r, cursor)
+            background_image, real_value = technic(background_image, painting, detected_items, cursor)
             if real_value is None:
                 real_value = -1.0
             elif real_value > 1000.0:
@@ -284,8 +295,10 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
             background_image = background_image.convert("RGB")
             background_image.save(file_saved)
             file_saved = path_to_results + painting_name + "-method=" + method_names[
-                j // nb_paintings] + "-value=" + '%.3f' % real_value + '.pgm'
-            background_image = ImageOps.grayscale(background_image)
+                j // nb_paintings] + "-value=" + '%.3f' % real_value + '.png'
+            if bw_convert:
+               background_image = ImageOps.grayscale(background_image)
+
             background_image.save(file_saved)
 
             new_file_saved = path_to_results + painting_name + "-method=" + method_names[
@@ -299,6 +312,7 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
             cursor += cursor_step  # to have different result for an image
             j += 1
 
+    return #trace_log
 
 if __name__ == "__main__":
     painting_dir = default_painting_folder

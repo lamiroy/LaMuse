@@ -38,7 +38,7 @@ def generate_images(source_path: str, destination_path: str) -> None:
 
     # @TODO these image extensions should be imported from `Musesetup.py`
     image_extensions = ["jpg", "gif", "png", "tga", "jpeg"]
-    image_list = [y for x in [glob(f'{source_path}/**/*.{ext}', recursive=True) for ext in image_extensions] for y in
+    image_list = [y for x in [glob(f'{source_path}/**/*.{ext}', recursive=True) for ext.lower() in image_extensions] for y in
                   x]
 
     if not os.path.exists(destination_path):

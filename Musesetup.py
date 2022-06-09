@@ -12,11 +12,17 @@ import os
 
 version_number = '0.2.3-beta'
 
-image_extensions = ["jpg", "gif", "png", "tga", "jpeg", "pgm"]
+image_extensions = ["jpg", "gif", "png", "tga", "jpeg", "pgm", "pnm"]
 
 
 segmentation_suffix = "_objets"
 default_base_folder = os.path.dirname(__file__)
+
+
+with open(f'{default_base_folder}/version_number') as vn:
+   version_number = vn.readline()
+
+# version_number = '0.2.3'
 
 print(f"Default execution directory = {default_base_folder}")
 
@@ -28,6 +34,8 @@ default_substitute_folder = default_image_folder + segmentation_suffix
 default_painting_folder = f'{default_base_folder}/Paintings'
 default_interpretation_folder = './Interpretations'
 default_watermark_file = f'{default_base_folder}/Watermark.png'
+default_trace_file = f'lamuse_tuples.json'
+
 
 mask_rcnn_config_file = f'{default_base_folder}/mask_rcnn_coco.h5'
 

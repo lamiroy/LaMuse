@@ -19,8 +19,14 @@ def add_watermark(img: np.ndarray, path_to_watermark: str = "./Watermark.png") -
 
 
 def add_diagonal_watermark(img: np.ndarray, path_to_watermark: str = "./Watermark.png") -> np.ndarray:
-    img_height, img_width = img.shape[:2]
+    img_height, img_width, channels = img.shape[:3]
     new_dim = (img_width, img_height)
+
+    # Add alpha channel if needed
+    if channels == 3:
+        b_channel, g_channel, r_channel = cv2.split(img)
+        alpha_channel = np.ones(b_channel.shape, dtype=b_channel.dtype) * 255 #creating a dummy alpha channel image.
+        img = cv2.merge((b_channel, g_channel, r_channel, alpha_channel))
 
     overlay = cv2.imread(path_to_watermark, cv2.IMREAD_UNCHANGED)
     if overlay is None or overlay.size == 0:

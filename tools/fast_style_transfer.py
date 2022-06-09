@@ -11,7 +11,8 @@
 import numpy as np
 import tensorflow as tf
 import tensorflow_hub as tf_hub
-import PIL
+# import PIL
+import cv2
 import os
 from matplotlib import pyplot as plt
 
@@ -33,7 +34,9 @@ def tensor_to_image(tensor):
     if np.ndim(tensor) > 3:
         assert tensor.shape[0] == 1
         tensor = tensor[0]
-    return PIL.Image.fromarray(tensor)
+
+    return tensor.numpy()
+    #return PIL.Image.fromarray(tensor)
 
 
 def load_img(path_to_img: str):
@@ -54,7 +57,6 @@ def load_img(path_to_img: str):
     scale = max_dim / long_dim
 
     new_shape = tf.cast(shape * scale, tf.int32)
-    print(new_shape)
 
     img = tf.image.resize(img, new_shape)
     img = img[tf.newaxis, :]
@@ -68,22 +70,26 @@ def load_and_rescale(path_to_img: str, max_dim: int = 512):
     :return:
     """
 
-    image = PIL.Image.open(path_to_img)
-    image = image.convert("RGB")
+    # image = PIL.Image.open(path_to_img)
+    # image = image.convert("RGB")
 
-    shape = image.size
-    long_dim = max(shape)
-    scale = max_dim / long_dim
+    image = cv2.imread(path_to_img, cv2.IMREAD_COLOR)
 
-    image = image.resize((int(shape[0] * scale), int(shape[1] * scale)), PIL.Image.ANTIALIAS)
-    # image.save(path_to_img + "_style.png")
+    if max_dim:
+        # shape = image.size
+        shape = image.shape
+        long_dim = max(shape)
+        scale = max_dim / long_dim
+
+        # image = image.resize((int(shape[0] * scale), int(shape[1] * scale)), PIL.Image.ANTIALIAS)
+        image = cv2.resize(image, (int(shape[0] * scale), int(shape[1] * scale)), interpolation=cv2.INTER_LANCZOS4)
+
     # Make sure to remove transparency layer
-    image = np.asarray(image)[:, :, :3]
-
+    # image = np.asarray(image)[:, :, :3]
     return image
 
 
-def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, scale_image: bool = True) -> None:
+def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, scale_image: bool = True) -> np.array:
     """
     :param path_content:
     :param path_style:
@@ -103,8 +109,12 @@ def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, 
     # style_image = plt.imread(path_style)
     style_image = load_and_rescale(path_style, max_dim)
 
-    if not scale_image:
-        content_image = plt.imread(path_content)
+    if scale_image:
+        content_image = new_load_img(path_content, max_dim)
+    else:
+        content_image = new_load_img(path_content, None)
+
+
 
     # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1].
     content_image = content_image.astype(np.float32)[np.newaxis, ...] / 255.
@@ -122,9 +132,14 @@ def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, 
     #
     outputs = hub_module(tf.constant(content_image), tf.constant(style_image))
     stylized_image = tf.cast(outputs[0] * 255, dtype=tf.uint8).numpy()[0]
-    stylized_image = PIL.Image.fromarray(stylized_image)
-    stylized_image = stylized_image.convert("RGBA")
-    stylized_image.save(path_to_save)
+    stylized_image = np.asarray(stylized_image)
+
+    # stylized_image = PIL.Image.fromarray(stylized_image)
+    # stylized_image = stylized_image.convert("RGB")
+    # stylized_image.save(path_to_save)
+    cv2.imwrite(path_to_save, stylized_image)
+
+    return stylized_image
 
     # Stylize image (scaled).
     # outputs_scaled = hub_module(tf.constant(content_image_scaled), tf.constant(style_image))
