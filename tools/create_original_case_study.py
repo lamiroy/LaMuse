@@ -223,11 +223,11 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
     # Run the model on the painting.
     model = MaskRCNNModel().model
 
-    painting_file_list = [y for x in [glob(path_to_paintings + '/*.%s' % ext) for ext.lower() in image_extensions] for y in x]
+    painting_file_list = [y for x in [glob(path_to_paintings + '/*.%s' % ext.lower()) for ext in image_extensions] for y in x]
 
     # List of available background images
     background_file_list = \
-        [y for x in [glob(path_to_background_images + '/*.%s' % ext) for ext.lower() in image_extensions] for y in x]
+        [y for x in [glob(path_to_background_images + '/*.%s' % ext.lower()) for ext in image_extensions] for y in x]
 
     if len(object_image_list) == 0 or len(object_image_list_nested) == 0:
         print("Updating objects...")
@@ -235,8 +235,8 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
         for obj in MaskRCNNModel.class_names:
             # object_file_list[obj] = [y for x in [glob(path_to_substitute_objects + '/%s/*.%s' % (obj, ext))
             # for ext in image_extensions] for y in x]
-            file_list = [y for x in [glob(path_to_substitute_objects + '/%s/*.%s' % (obj, ext))
-                                     for ext.lower() in image_extensions] for y in x]
+            file_list = [y for x in [glob(path_to_substitute_objects + '/%s/*.%s' % (obj, ext.lower()))
+                                     for ext in image_extensions] for y in x]
             object_image_list_nested[obj] = [cv2.imread(i, cv2.IMREAD_UNCHANGED) for i in file_list]
             [object_image_list.append(img) for img in object_image_list_nested[obj]]
         # for nested_list in object_file_list.values():
