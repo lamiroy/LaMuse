@@ -93,8 +93,11 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
 
             new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.pnm'
             final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
-            os.remove(interpretation)
-            interpretation = new_interpretation
+
+            if new_interpretation != interpretation:
+                os.remove(interpretation)
+                interpretation = new_interpretation
+
             trace_log[painting] += f'{get_color_names(final_image)}'
 
             if args.verbose:
