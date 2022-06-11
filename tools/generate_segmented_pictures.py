@@ -13,6 +13,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from .MaskRCNNModel import MaskRCNNModel
+from ..Musesetup import *
 from ..Mask_RCNN.mrcnn.visualize import display_instances
 import argparse
 import os
@@ -36,9 +37,7 @@ def generate_images(source_path: str, destination_path: str) -> None:
     assert source_path != ""
     assert destination_path != ""
 
-    # @TODO these image extensions should be imported from `Musesetup.py`
-    image_extensions = ["jpg", "gif", "png", "tga", "jpeg"]
-    image_list = [y for x in [glob(f'{source_path}/**/*.{ext.lower()}', recursive=True) for ext in image_extensions] for y in
+    image_list = [y for x in [glob(f'{source_path}/**/*.{ext}', recursive=True) for ext in image_extensions] for y in
                   x]
 
     if not os.path.exists(destination_path):

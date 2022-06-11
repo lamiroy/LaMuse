@@ -9,6 +9,8 @@
 #
 
 from glob import glob
+from pathlib import Path
+
 import cv2
 import errno
 import argparse
@@ -39,7 +41,7 @@ layout = [[sg.Text("Dossier d'images substituts"), sg.Input(), sg.FolderBrowse(i
 
 
 def generate_full_case_study(painting_folder: str, substitute_folder: str,
-                             background_folder: str, interpretation_folder: str):
+                             background_folder: str, interpretation_folder: str) -> dict:
     """
     :param painting_folder:
     :param substitute_folder:
@@ -57,8 +59,8 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
     if args.verbose:
         print("   Calling create_collage")
 
-    create_case_study(painting_folder, substitute_folder,
-                      background_folder, interpretation_folder, 1)
+    trace_log = create_collage(painting_folder, substitute_folder,
+                   background_folder, interpretation_folder, 1)
 
     if args.verbose:
         print("   Done calling create_collage")
@@ -76,9 +78,10 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             print("    Handling " + painting)
 
         interpretation_file_list = [y for x in
-                                    [glob(interpretation_folder + '/%s*.%s' % (os.path.basename(painting), ext))
+                                    [glob(f'{interpretation_folder}/{os.path.basename(painting)}*.{ext}')
                                      for ext in image_extensions]
                                     for y in x]
+
         for interpretation in interpretation_file_list:
             ##
             # The following function will apply a style transfer on 'interpretation' as to have it
@@ -88,7 +91,10 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             if args.verbose:
                 print(f'    Saving {interpretation}')
 
-            final_image = apply_style_transfer(interpretation, painting, interpretation, args.rescale)
+            new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.pnm'
+            final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
+            os.remove(interpretation)
+            interpretation = new_interpretation
             trace_log[painting] += f'{get_color_names(final_image)}'
 
             if args.verbose:
@@ -103,6 +109,8 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
                 cv2.imwrite(interpretation, final_image)
 
     if args.trace_file:
+        if args.verbose:
+            print(f"Writing trace_log file {args.trace_file}")
         with open(args.trace_file, 'w') as f:
             f.write(json.dumps(trace_log))
 

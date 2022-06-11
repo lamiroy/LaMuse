@@ -17,6 +17,7 @@ from matplotlib.pyplot import imshow
 import os
 
 from .MaskRCNNModel import MaskRCNNModel
+from ..Musesetup import *
 
 
 # from .compare_images import transparancy_mask_to_BW
@@ -72,7 +73,6 @@ if __name__ == "__main__":
     mask_rcnn_config_file = os.path.dirname(__file__) + '/mask_rcnn_coco.h5'
 
     path_objects_to_replace = "./LaMuse/BaseImages_objets"
-    image_extensions = ["jpg", "gif", "png", "tga"]
 
     object_file_list = []
     for obj in MaskRCNNModel.class_names:

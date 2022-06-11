@@ -36,7 +36,7 @@ def tensor_to_image(tensor):
         tensor = tensor[0]
 
     return tensor.numpy()
-    #return PIL.Image.fromarray(tensor)
+    # return PIL.Image.fromarray(tensor)
 
 
 def load_img(path_to_img: str):
@@ -110,11 +110,9 @@ def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, 
     style_image = load_and_rescale(path_style, max_dim)
 
     if scale_image:
-        content_image = new_load_img(path_content, max_dim)
+        content_image = load_and_rescale(path_content, max_dim)
     else:
-        content_image = new_load_img(path_content, None)
-
-
+        content_image = load_and_rescale(path_content, None)
 
     # Convert to float32 numpy array, add batch dimension, and normalize to range [0, 1].
     content_image = content_image.astype(np.float32)[np.newaxis, ...] / 255.

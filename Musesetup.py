@@ -15,12 +15,17 @@ version_number = '0.2.3-beta'
 image_extensions = ["jpg", "gif", "png", "tga", "jpeg", "pgm", "pnm"]
 
 
+def either(c):
+    return f'[{c.lower()}{c.upper()}]' if c.isalpha() else c
+
+
+image_extensions = [''.join(either(char) for char in ext) for ext in image_extensions]
+
 segmentation_suffix = "_objets"
 default_base_folder = os.path.dirname(__file__)
 
-
 with open(f'{default_base_folder}/version_number') as vn:
-   version_number = vn.readline()
+    version_number = vn.readline()
 
 # version_number = '0.2.3'
 
@@ -36,7 +41,4 @@ default_interpretation_folder = './Interpretations'
 default_watermark_file = f'{default_base_folder}/Watermark.png'
 default_trace_file = f'lamuse_tuples.json'
 
-
 mask_rcnn_config_file = f'{default_base_folder}/mask_rcnn_coco.h5'
-
-
