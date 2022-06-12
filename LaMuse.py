@@ -41,7 +41,7 @@ layout = [[sg.Text("Dossier d'images substituts"), sg.Input(), sg.FolderBrowse(i
 
 
 def generate_full_case_study(painting_folder: str, substitute_folder: str,
-                             background_folder: str, interpretation_folder: str) -> dict:
+                             background_folder: str, interpretation_folder: str) -> None:
     """
     :param painting_folder:
     :param substitute_folder:
@@ -60,7 +60,7 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
         print("   Calling create_collage")
 
     trace_log = create_collage(painting_folder, substitute_folder,
-                   background_folder, interpretation_folder, 1)
+                               background_folder, interpretation_folder, 1)
 
     if args.verbose:
         print("   Done calling create_collage")
@@ -175,7 +175,8 @@ if __name__ == "__main__":
     if not os.path.isfile(mask_rcnn_config_file):
         if not args.nogui:
             sg.Popup(
-                'LaMuse ne peut pas fonctionner sans le fichier %s. Merci de lire la documentation.' % mask_rcnn_config_file,
+                f'LaMuse ne peut pas fonctionner sans le fichier {mask_rcnn_config_file}. Merci de lire la '
+                f'documentation.',
                 title='Erreur')
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), mask_rcnn_config_file)
