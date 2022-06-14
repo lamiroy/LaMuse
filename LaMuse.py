@@ -91,7 +91,7 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             if args.verbose:
                 print(f'    Saving {interpretation}')
 
-            new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.pnm'
+            new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.png'
             final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
 
             if new_interpretation != interpretation:
@@ -166,10 +166,10 @@ if __name__ == "__main__":
     default_substitute_folder = args.substitute_dir[0]
     default_background_folder = args.background_dir[0]
 
-    print(default_painting_folder)
-    print(default_interpretation_folder)
-    print(default_substitute_folder)
-    print(default_background_folder)
+    print(f'Painting folder: {default_painting_folder}')
+    print(f'Interpretation folder: {default_interpretation_folder}')
+    print(f'Substitute folder: {default_substitute_folder}')
+    print(f'Background folder: {default_background_folder}')
 
     # @TODO properly include stuff using pkg_resources
     if not os.path.isfile(mask_rcnn_config_file):

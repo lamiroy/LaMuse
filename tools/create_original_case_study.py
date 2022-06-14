@@ -21,7 +21,7 @@ from tensorflow.python.keras.backend import reset_uids
 # import tensorflow.compat.v1 as tf
 
 # tf.disable_v2_behavior()
-from tools.fast_style_transfer import apply_style_transfer
+from .fast_style_transfer import apply_style_transfer
 from .compare_images import best_image
 from .generate_segmented_pictures import get_segmented_mask
 from ..Musesetup import *
@@ -297,14 +297,16 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
 
             # Save background_image.
             file_saved = f'{path_to_results}{painting_name}-method={method_names[j // nb_paintings]}-value=' + '%.3f' % real_value + '.png'
-            background_image = background_image.convert("RGB")
-            background_image.save(file_saved)
-            file_saved = path_to_results + painting_name + "-method=" + method_names[
-                j // nb_paintings] + "-value=" + '%.3f' % real_value + '.png'
-            if bw_convert:
-                background_image = ImageOps.grayscale(background_image)
 
-            background_image.save(file_saved)
+            if bw_convert:
+                print("Converting to greyscale")
+                background_image = ImageOps.grayscale(background_image)
+                background_image = background_image.convert("BGR")
+                background_image.save(file_saved)
+            else:
+                print("No conversion")
+                background_image = background_image.convert("RGB")
+                background_image.save(file_saved)
 
             new_file_saved = path_to_results + painting_name + "-method=" + method_names[
                 j // nb_paintings] + "-value=" + '%.3f' % real_value + '-V2.png'
@@ -318,6 +320,7 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
             cursor += cursor_step  # to have different result for an image
             j += 1
 
+    print("End create_collage")
     return trace_log
 
 
