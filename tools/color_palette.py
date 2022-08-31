@@ -44,8 +44,8 @@ def color_quantify(image: np.array, nb: int) -> np.array:
 def bincount_app(a: np.array, nb: int):
     # Not reducing image colours to three significant bits per channel since image supposedly already
     # reduced.
-    #a = a & int("11100000", 2)
-    cv2.imwrite("final_image.jpg",a)
+    # a = a & int("11100000", 2)
+    # cv2.imwrite("final_image.jpg",a)
 
     a2D = a.reshape(-1,a.shape[-1])
 
