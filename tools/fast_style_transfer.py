@@ -82,7 +82,7 @@ def load_and_rescale(path_to_img: str, max_dim: int = 512):
         scale = max_dim / long_dim
 
         # image = image.resize((int(shape[0] * scale), int(shape[1] * scale)), PIL.Image.ANTIALIAS)
-        image = cv2.resize(image, (int(shape[0] * scale), int(shape[1] * scale)), interpolation=cv2.INTER_LANCZOS4)
+        image = cv2.resize(image, (int(shape[1] * scale), int(shape[0] * scale)), interpolation=cv2.INTER_LANCZOS4)
 
     # Make sure to remove transparency layer
     # image = np.asarray(image)[:, :, :3]
