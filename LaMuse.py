@@ -129,7 +129,7 @@ if __name__ == "__main__":
     #   - nogui flag
     ##
     parser = argparse.ArgumentParser(prog="LaMuse",
-                                     description='Generates reinterpretations of paintings')
+                                     description=f'Generates reinterpretations of paintings (version {version_number})')
     parser.add_argument("--input_dir", "-in", metavar='in', type=str, nargs=1,
                         help='input directory containing paintings to reinterpret (defaults to "'
                              + default_painting_folder + '" if non specified)', default=[default_painting_folder])

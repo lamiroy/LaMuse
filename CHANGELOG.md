@@ -1,3 +1,8 @@
+# Version 0.2.7
+
+- printing version number in `-help`
+- correcting color palette bug on inserted images by switching to OpenCV
+
 # Version 0.2.6
 
 - saving images in `.png` format rather than `.pnm`

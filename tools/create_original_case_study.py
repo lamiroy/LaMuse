@@ -92,7 +92,8 @@ def create_image_with_shapes(background_image: np.ndarray, painting: np.ndarray,
             axs[1].set_title("image modèle")
             plt.show()"""
 
-            replacement_object = Image.fromarray(replacement_shape)  # convert to Image
+            #replacement_object = Image.fromarray(replacement_shape)  # convert to Image
+            replacement_object = replacement_shape  # convert to Image
 
             # Définition des dimensions et du placement du futur objet à coller
             original_object_bbox = (r['rois'][i][1], r['rois'][i][0], r['rois'][i][3], r['rois'][i][2])
@@ -100,11 +101,21 @@ def create_image_with_shapes(background_image: np.ndarray, painting: np.ndarray,
             original_object_height = original_object_bbox[3] - original_object_bbox[1]
 
             # Resizing replacement_object to original_object dimensions.
-            replacement_object = replacement_object.resize((original_object_width, original_object_height),
+            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
                                                            Image.ANTIALIAS)
 
             # Paste replacement_object into background_image using alpha channel
-            background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+            # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+
+            y1, y2 = r['rois'][i][0], r['rois'][i][2]
+            x1, x2 = r['rois'][i][1], r['rois'][i][3]
+
+            alpha_s = replacement_object[:, :, 3] / 255.0
+            alpha_l = 1.0 - alpha_s
+
+            for c in range(0, 3):
+                background_image[y1:y2, x1:x2, c] = (alpha_s * replacement_object[:, :, c] +
+                              alpha_l * background_image[y1:y2, x1:x2, c])
         else:
             print("Warning : None image")
 
@@ -133,7 +144,8 @@ def create_image_with_categories_and_shapes(background_image, painting, r, curso
             result_image, result, _ = best_image(source_mask, object_image_list_nested[current_class], cursor)
             real_value += result
 
-            replacement_object = Image.fromarray(result_image)  # convert to Image
+            #replacement_object = Image.fromarray(result_image)  # convert to Image
+            replacement_object = result_image  # convert to Image
 
             # Définition des dimensions et du placement du futur objet à coller
             original_object_bbox = (r['rois'][i][1], r['rois'][i][0], r['rois'][i][3], r['rois'][i][2])
@@ -141,11 +153,21 @@ def create_image_with_categories_and_shapes(background_image, painting, r, curso
             original_object_height = original_object_bbox[3] - original_object_bbox[1]
 
             # Resizing replacement_object to original_object dimensions.
-            replacement_object = replacement_object.resize((original_object_width, original_object_height),
+            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
                                                            Image.ANTIALIAS)
 
             # Paste replacement_object into background_image using alpha channel
-            background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+            # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+
+            y1, y2 = r['rois'][i][0], r['rois'][i][2]
+            x1, x2 = r['rois'][i][1], r['rois'][i][3]
+
+            alpha_s = replacement_object[:, :, 3] / 255.0
+            alpha_l = 1.0 - alpha_s
+
+            for c in range(0, 3):
+                background_image[y1:y2, x1:x2, c] = (alpha_s * replacement_object[:, :, c] +
+                              alpha_l * background_image[y1:y2, x1:x2, c])
         else:
             print("Warning : None image")
 
@@ -174,17 +196,29 @@ def create_image_with_categories(background_image, painting, r, cursor):
             if len(similar_objects) == 0:
                 similar_objects = object_image_list_nested[current_class]
 
-            replacement_object = Image.fromarray(random.choice(similar_objects))
+            #replacement_object = Image.fromarray(random.choice(similar_objects))
+            replacement_object = random.choice(similar_objects)
         except IndexError:
             print("Cannot find", current_class)  # , "in", path_to_substitute_objects, "for", painting_name)
             break
 
         # Resizing replacement_object to original_object dimensions.
-        replacement_object = replacement_object.resize((original_object_width, original_object_height),
+        replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
                                                        Image.ANTIALIAS)
 
         # Paste replacement_object into background_image using alpha channel
-        background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+        # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
+
+        y1, y2 = r['rois'][i][0], r['rois'][i][2]
+        x1, x2 = r['rois'][i][1], r['rois'][i][3]
+
+        alpha_s = replacement_object[:, :, 3] / 255.0
+        alpha_l = 1.0 - alpha_s
+
+        for c in range(0, 3):
+            background_image[y1:y2, x1:x2, c] = (alpha_s * replacement_object[:, :, c] +
+                          alpha_l * background_image[y1:y2, x1:x2, c])
+
     return background_image, 0
 
 
@@ -279,13 +313,16 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
                 print(path_to_background_images + " is empty, taking initial image instead")
                 background_image_name = painting_filename
 
-            background_image = Image.open(background_image_name)
+            #background_image = Image.open(background_image_name)
+            background_image = cv2.imread(background_image_name, cv2.IMREAD_UNCHANGED)
 
             trace_log[painting_filename] += f'(background_image,{background_image_name})'
 
             # Resize the background image with the size of painting.
-            background_image = background_image.resize((painting_width, painting_height), Image.ANTIALIAS)
-            background_image = background_image.convert("RGBA")
+            #background_image = background_image.resize((painting_width, painting_height), Image.ANTIALIAS)
+            #background_image = background_image.convert("RGBA")
+
+            background_image = cv2.resize(background_image, (painting_width, painting_height), interpolation=cv2.INTER_AREA)
             original_background_image = background_image
 
             background_image, real_value = technic(background_image, painting, detected_items, cursor)
@@ -300,27 +337,28 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
 
             if bw_convert:
                 print("Converting to greyscale")
-                background_image = ImageOps.grayscale(background_image)
-                background_image = background_image.convert("BGR")
-                background_image.save(file_saved)
+                # background_image = ImageOps.grayscale(background_image)
+                # background_image = background_image.convert("BGR")
+                # background_image.save(file_saved)
+                background_image = cv2.cvtColor(background_image, cv2.COLOR_BGR2GRAY)
             else:
                 print("No conversion")
-                background_image = background_image.convert("RGB")
-                background_image.save(file_saved)
+                #background_image = background_image.convert("RGB")
+                #background_image.save(file_saved)
+
+            cv2.imwrite(file_saved, background_image)
 
             new_file_saved = path_to_results + painting_name + "-method=" + method_names[
                 j // nb_paintings] + "-value=" + '%.3f' % real_value + '-V2.png'
             apply_style_transfer(file_saved, background_image_name, new_file_saved)
+
             new_file_copy = path_to_results + 'No-' + painting_name + "-method=" + method_names[
                 j // nb_paintings] + "-value=" + '%.3f' % real_value + '-V2.png'
-            print(f'Copying {new_file_saved} to {new_file_copy}')
             shutil.copyfile(new_file_saved, new_file_copy)
 
-            print("Real value obtained : ", real_value)
             cursor += cursor_step  # to have different result for an image
             j += 1
 
-    print("End create_collage")
     return trace_log
 
 
