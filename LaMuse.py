@@ -95,6 +95,7 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
 
             if new_interpretation != interpretation:
+                print(f'Removing {interpretation}, keeping {new_interpretation}')
                 os.remove(interpretation)
                 interpretation = new_interpretation
 
@@ -163,6 +164,8 @@ if __name__ == "__main__":
     # Reset default directories if adequate arguments are provided
     default_painting_folder = args.input_dir[0]
     default_interpretation_folder = args.output_dir[0]
+    if len(default_interpretation_folder) > 1 and default_interpretation_folder[-1] == '/':
+        default_interpretation_folder = default_interpretation_folder[:-1]
     default_substitute_folder = args.substitute_dir[0]
     default_background_folder = args.background_dir[0]
 

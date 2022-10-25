@@ -105,7 +105,8 @@ def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, 
     # Optionally resize the images. It is recommended that the style image is about
     # 256 pixels (this size was used when training the style transfer network).
     # The content image can be any size.
-    content_image = load_and_rescale(path_content, max_dim)
+
+    # content_image = load_and_rescale(path_content, max_dim)
     # style_image = plt.imread(path_style)
     style_image = load_and_rescale(path_style, max_dim)
 
