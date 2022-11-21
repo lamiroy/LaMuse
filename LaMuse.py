@@ -92,6 +92,9 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
                 print(f'    Saving {interpretation}')
 
             new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.png'
+
+            if args.verbose:
+                print(f'    Rescaling set to {args.rescale}')
             final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
 
             if new_interpretation != interpretation:
@@ -150,7 +153,7 @@ if __name__ == "__main__":
     parser.add_argument("--nogui", action='store_true', help='Run in no-gui mode')
     parser.add_argument("-bw", action='store_true', help='Add greyscale filter')
     parser.add_argument("--verbose", action='store_true', help='Display trace messages')
-    parser.add_argument("--rescale", action='store_true', help='Remove rescaling before applying style transfer')
+    parser.add_argument("--rescale", action='store_true', help='Apply rescaling before applying style transfer')
     parser.add_argument('--version', action='version', version='%(prog)s {}'.format(version_number))
     parser.add_argument("--watermark", "-wm", type=str, nargs='?', const=default_watermark_file,
                         help='watermark file (defaults to "' + default_watermark_file + '" if non specified)')
