@@ -9,7 +9,7 @@ matplotlib==3.5.2
 ipython==8.4.0
 pip==22.1.2
 setuptools==62.3.3
-Pillow==9.0.0
+Pillow==9.3.0
 opencv-python==4.5.5.62
 
 PySimpleGUI==4.60.1
