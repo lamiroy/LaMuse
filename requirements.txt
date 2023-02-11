@@ -6,7 +6,7 @@ scipy==1.8.1
 scikit-image==0.19.2
 scikit-learn
 matplotlib==3.5.2
-ipython==8.4.0
+ipython==8.10.0
 pip==22.1.2
 setuptools==62.3.3
 Pillow==9.0.0
