@@ -1,5 +1,41 @@
-#  Copyright (c) 2022. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
+#  Copyright (c) 2022-2023. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
 #  as per git commit history. All rights reserved.
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
 #
 #  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
 #  https://hal.archives-ouvertes.fr/hal-03470467/
@@ -10,23 +46,16 @@
 import shutil
 from glob import glob
 from math import fabs, log
-
+import numpy as np
 from numpy import Inf
+import cv2
+import random
 
+from .MaskRCNNModel import MaskRCNNModel
 from .fast_style_transfer import apply_style_transfer
 from .compare_images import best_image
 from .generate_segmented_pictures import get_segmented_mask
 from ..Musesetup import *
-
-from PIL import Image
-import random
-import cv2
-import numpy as np
-
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
-
-from .MaskRCNNModel import MaskRCNNModel
 
 # @Todo find out why there are global variables and how to (maybe) get rid of them
 # object_file_list = {}
@@ -91,8 +120,7 @@ def create_image_with_shapes(background_image: np.ndarray, painting: np.ndarray,
             original_object_height = original_object_bbox[3] - original_object_bbox[1]
 
             # Resizing replacement_object to original_object dimensions.
-            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
-                                            Image.ANTIALIAS)
+            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height))
 
             # Paste replacement_object into background_image using alpha channel
             # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
@@ -143,8 +171,7 @@ def create_image_with_categories_and_shapes(background_image, painting, r, curso
             original_object_height = original_object_bbox[3] - original_object_bbox[1]
 
             # Resizing replacement_object to original_object dimensions.
-            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
-                                            Image.ANTIALIAS)
+            replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height))
 
             # Paste replacement_object into background_image using alpha channel
             # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
@@ -194,8 +221,7 @@ def create_image_with_categories(background_image, painting, r, cursor):
             break
 
         # Resizing replacement_object to original_object dimensions.
-        replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height),
-                                        Image.ANTIALIAS)
+        replacement_object = cv2.resize(replacement_object, (original_object_width, original_object_height))
 
         # Paste replacement_object into background_image using alpha channel
         # background_image.paste(replacement_object, (r['rois'][i][1], r['rois'][i][0]), replacement_object)
@@ -278,8 +304,9 @@ def create_collage(path_to_paintings: str, path_to_substitute_objects: str,
 
         trace_log[painting_filename] = f'(painting_name,{painting_name})'
 
-        painting = load_img(painting_filename)
-        painting = img_to_array(painting)
+        #painting = load_img(painting_filename)
+        #painting = img_to_array(painting)
+        painting = cv2.imread(painting_filename)
         painting_width, painting_height = painting.shape[1], painting.shape[0]
 
         # Extract significant items from painting
