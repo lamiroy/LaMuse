@@ -36,8 +36,10 @@ Ce dossier utilise le dépôt de matterport Mask_RCNN : https://github.com/matte
 
 Pour fonctionner il est nécessaire d'aouter à la racine du projet le fichier [mask_rcnn_coco.h5](https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5) détaillant les poids du modèle Mask_RCNN.h5 (modèle Keras).
 
+### Lancement du projet:
+<li>Sous windows : le code Python est censé etre invoqué depuis le dossier superieur a la racine</li>
 
-Le code Python est censé être invoqué depuis la racine du dépôt. Pour l'instant certains chemins sont codés en dur.
+<li>Sous linux : Le code Python est censé être invoqué depuis la racine du dépôt. Pour l'instant certains chemins sont codés en dur.</li>
 
 Pour lancer un exécutable, il faut donc faire :
 
