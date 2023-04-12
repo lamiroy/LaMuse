@@ -1,4 +1,4 @@
-#  Copyright (c) 2022. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
+#  Copyright (c) 2022-2023. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
 #  as per git commit history. All rights reserved.
 #
 #  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
@@ -7,20 +7,25 @@
 #  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
 #  Version 3, 29 June 2007
 #
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
 
+import argparse
+import os
 from glob import glob
+
+import cv2
 import numpy as np
-from matplotlib import pyplot as plt
+from PIL import Image
+#from keras.preprocessing.image import img_to_array
+#from keras.preprocessing.image import load_img
 
 from .MaskRCNNModel import MaskRCNNModel
 from ..Musesetup import *
-from ..Mask_RCNN.mrcnn.visualize import display_instances
-import argparse
-import os
-from PIL import Image
-
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
 
 
 def generate_images(source_path: str, destination_path: str) -> None:
@@ -49,10 +54,12 @@ def generate_images(source_path: str, destination_path: str) -> None:
     # Iterate over all files in source_path
     # @Todo : verify that all files are effectively images, handle errors
     for filename in image_list:
-        img = load_img(filename)
-        original_image = load_img(filename)
+        #img = load_img(filename)
+        #original_image = load_img(filename)
+        #
+        #img = img_to_array(img)
 
-        img = img_to_array(img)
+        img = cv2.imread(filename)
 
         # Detecting known classes with RCNN model in image list [img]
         results = model.detect([img], verbose=0, probability_criteria=0.7)
@@ -101,6 +108,11 @@ def generate_images(source_path: str, destination_path: str) -> None:
                         counter) + "_" +
                     str(obj_idx) + ".png")
 
+                #@Todo following code is redundant with previous one for testing if PIL and cv2 are interchangeable
+                test_crop = masked_image[box_dimensions[1]:box_dimensions[3], box_dimensions[0]:box_dimensions[2]]
+                cv2.imwrite(destination_path + "/" + MaskRCNNModel.class_names[r['class_ids'][obj_idx]] + "/" + str(
+                        counter) + "_" + str(obj_idx) + ".cv2.png", test_crop)
+
             counter += 1
 
 
@@ -118,8 +130,6 @@ def get_segmented_mask(img: np.ndarray, r: dict, index: int) -> np.ndarray:
     for c in range(3):
         masked_image[:, :, c] = np.where(r['masks'][:, :, index] == 1,
                                          img[:, :, c], 0)
-
-    # segmented_image = Image.new("RGBA", masked_image)
 
     ##
     # following lines adapted from https://stackoverflow.com/questions/54703674/how-do-i-make-my-numpy-image-take-an-alpha-channel-value-in-python

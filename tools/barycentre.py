@@ -1,5 +1,11 @@
-#  Copyright (c) 2022. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
+#  Copyright (c) 2022-2023. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
 #  as per git commit history. All rights reserved.
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
 #
 #  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
 #  https://hal.archives-ouvertes.fr/hal-03470467/
@@ -14,7 +20,6 @@ import matplotlib.pyplot as plt
 import cv2
 
 from matplotlib.pyplot import imshow
-import os
 
 from .MaskRCNNModel import MaskRCNNModel
 from ..Musesetup import *
