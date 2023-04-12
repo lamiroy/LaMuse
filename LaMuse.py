@@ -96,7 +96,11 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             if args.verbose:
                 print(f'    Rescaling set to {args.rescale}')
             final_image = apply_style_transfer(interpretation, painting, new_interpretation, args.rescale)
-
+             ##
+            # normalisation of the different file paths for worcking on both os
+            new_interpretation = os.path.normpath(new_interpretation)
+            interpretation = os.path.normpath(interpretation)
+            
             if new_interpretation != interpretation:
                 print(f'Removing {interpretation}, keeping {new_interpretation}')
                 os.remove(interpretation)
