@@ -20,14 +20,14 @@ Pour ce faire :
 3. Exécuter `python3 -m pip install <fichier.whl>`
 4. Installer tous les packages nécessaires à l'éxécution de _Lamuse_, tels que spécifiés dans le fichier `requirements.txt` disponible sur git : `python3 -m pip install -r requirements.txt`.
 
-Ensuite on peut exécuter _Lamuse_ avec la commande `python3 -m LaMuse.LaMuse`. L'option `--help` énumère tous les paramètres configurables.
+Ensuite on peut exécuter _Lamuse_ avec la commande `python3 -m LaMuse`. L'option `--help` énumère tous les paramètres configurables.
 
 ### Code
 
 
 Le code se trouve dans :
 
-- `LaMuse.py`
+- `__main__.py`
 - `tools/`
 - `Muse_RCNN/` (
 Ce dossier utilise le dépôt de matterport Mask_RCNN : https://github.com/matterport/Mask_RCNN)
