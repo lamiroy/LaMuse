@@ -88,10 +88,12 @@ def generate_full_case_study(painting_folder: str, substitute_folder: str,
             # adopt the same style as 'painting'
             # The result is stored in 'interpretation'
             ##
+            interpretation = os.path.normpath(interpretation)
+
             if args.verbose:
                 print(f'    Saving {interpretation}')
 
-            new_interpretation = f'{interpretation_folder}/{Path(interpretation).stem}.png'
+            new_interpretation = os.path.normpath(f'{interpretation_folder}/{Path(interpretation).stem}.png')
 
             if args.verbose:
                 print(f'    Rescaling set to {args.rescale}')
