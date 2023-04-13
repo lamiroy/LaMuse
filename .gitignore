@@ -3,3 +3,4 @@
 .DS_Store
 __pycache__
 mask_rcnn_coco.h5
+/Muse_pkg/LaMuse/BaseImages_objets/

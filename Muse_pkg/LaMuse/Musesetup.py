@@ -1,0 +1,1 @@
+../../LaMuse/Musesetup.py
