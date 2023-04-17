@@ -18,7 +18,7 @@ import json
 
 import pkg_resources
 
-import PySimpleGUI as sg
+
 
 from .tools.color_palette import get_color_names
 from .tools.generate_segmented_pictures import generate_images
@@ -28,16 +28,7 @@ from .tools.watermarking import add_watermark
 
 from .Musesetup import *
 
-sg.theme('DarkAmber')
 
-layout = [[sg.Text("Dossier d'images substituts"), sg.Input(), sg.FolderBrowse(initial_folder=".")],
-          # [gui.Text('Veuillez confirmer le traitement d\'images actuelles (ne pas fermer cette fenëtre durant le
-          # traitement) : ')],
-          [sg.Button("Génération de substituts")],
-          [sg.Text('Dossier d\'oeuvres'), sg.Input(), sg.FolderBrowse(initial_folder=".")],
-          [sg.Text('Dossier d\'images de fond : '), sg.Input(), sg.FolderBrowse(initial_folder=".")],
-          [sg.Button("Créer un cas d'étude")]
-          ]
 
 
 def generate_full_case_study(painting_folder: str, substitute_folder: str,
@@ -195,7 +186,7 @@ if __name__ == "__main__":
 
     # generate_images(args.input_dir, args.output_dir if args.output_dir else args.input_dir)
 
-    window = sg.Window('Génération d\'images', layout)
+   
 
     if args.nogui:
         if args.verbose:
@@ -208,6 +199,18 @@ if __name__ == "__main__":
             print("Done calling full_case_study")
 
     else:
+        
+        import PySimpleGUI as sg
+        sg.theme('DarkAmber')
+        layout = [[sg.Text("Dossier d'images substituts"), sg.Input(), sg.FolderBrowse(initial_folder=".")],
+          # [gui.Text('Veuillez confirmer le traitement d\'images actuelles (ne pas fermer cette fenëtre durant le
+          # traitement) : ')],
+          [sg.Button("Génération de substituts")],
+          [sg.Text('Dossier d\'oeuvres'), sg.Input(), sg.FolderBrowse(initial_folder=".")],
+          [sg.Text('Dossier d\'images de fond : '), sg.Input(), sg.FolderBrowse(initial_folder=".")],
+          [sg.Button("Créer un cas d'étude")]
+          ]
+        window = sg.Window('Génération d\'images', layout)
         while not args.nogui:
             event, values = window.read()
             if event in (None, 'Cancel'):
