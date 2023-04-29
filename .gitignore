@@ -4,3 +4,6 @@
 __pycache__
 mask_rcnn_coco.h5
 /Muse_pkg/LaMuse/BaseImages_objets/
+/LaMuse/BaseImages_objets/
+tf_cache
+venv
