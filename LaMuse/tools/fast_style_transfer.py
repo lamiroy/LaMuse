@@ -1,5 +1,35 @@
-#  Copyright (c) 2022. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
+#  Copyright (c) 2022-2023. Bart Lamiroy (Bart.Lamiroy@univ-reims.fr) and subsequent contributors
 #  as per git commit history. All rights reserved.
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
+#
+#  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
+#  https://hal.archives-ouvertes.fr/hal-03470467/
+#
+#  This code is licenced under the GNU LESSER GENERAL PUBLIC LICENSE
+#  Version 3, 29 June 2007
 #
 #  La Muse, Leveraging Artificial Intelligence for Sparking Inspiration
 #  https://hal.archives-ouvertes.fr/hal-03470467/
@@ -121,7 +151,11 @@ def apply_style_transfer(path_content: str, path_style: str, path_to_save: str, 
 
     # Load image stylization module.
     os.environ['TFHUB_CACHE_DIR'] = './tf_cache'  # Any folder that you can access
-    hub_module = tf_hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+
+    # hub_module = tf_hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
+    # tf.saved_model.save(hub_module,"local_saved_model.tf")
+    model_path = os.path.dirname(__file__) + "/../local_saved_model.tf"
+    hub_module = tf_hub.load(model_path)
 
     # Stylize image.
     # @TODO Investigate and check image formats correctly
